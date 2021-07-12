@@ -10,10 +10,10 @@ import Foundation
 @available(iOS 13, macOS 10.15, *)
 public extension URLSession {
     
-    func response<Response>(_ request: Request<Response>) -> AnyPublisher<Response, NetworkingError> {
+    func response<Response>(_ request: Request<Response>) -> AnyPublisher<Response, BifrostError> {
         self.dataTaskPublisher(for: request.urlRequest)
             .mapError { .urlError(code: $0.code) }
-            .map { data, response -> Result<Response, NetworkingError> in
+            .map { data, response -> Result<Response, BifrostError> in
                 guard
                     let httpResponse = response as? HTTPURLResponse,
                     request.validateResponse(httpResponse)
@@ -33,7 +33,7 @@ public extension URLSession {
     }
     
     @available(iOS 13, macOS 10.15, *)
-    func response<Convertible: RequestConvertible>(_ convertible: Convertible) -> AnyPublisher<Convertible.Response, NetworkingError> {
+    func response<Convertible: RequestConvertible>(_ convertible: Convertible) -> AnyPublisher<Convertible.Response, BifrostError> {
         response(convertible.request)
     }
 }
@@ -44,10 +44,10 @@ public extension URLSession {
     func response<Response>(
         _ request: Request<Response>,
         resultQueue: DispatchQueue = .main,
-        completionHandler: @escaping (Result<Response, NetworkingError>) -> Void
+        completionHandler: @escaping (Result<Response, BifrostError>) -> Void
     ) -> URLSessionDataTask {
         defer { task.resume() }
-        func complete(with result: Result<Response, NetworkingError>) {
+        func complete(with result: Result<Response, BifrostError>) {
             resultQueue.async {
                 completionHandler(result)
             }
@@ -76,7 +76,7 @@ public extension URLSession {
     func response<Convertible: RequestConvertible>(
         _ convertible: Convertible,
         resultQueue: DispatchQueue = .main,
-        completionHandler: @escaping (Result<Convertible.Response, NetworkingError>) -> Void
+        completionHandler: @escaping (Result<Convertible.Response, BifrostError>) -> Void
     ) -> URLSessionDataTask {
         response(
             convertible.request,

@@ -6,7 +6,7 @@
 
 import Foundation
 
-public enum NetworkingError: Error {
+public enum BifrostError: Error {
         
     case invalidResponse(URLResponse)
     
