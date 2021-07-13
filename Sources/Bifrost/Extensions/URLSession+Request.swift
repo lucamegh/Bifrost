@@ -7,7 +7,6 @@
 import Combine
 import Foundation
 
-@available(iOS 13, macOS 10.15, *)
 public extension URLSession {
     
     func response<Response>(_ request: Request<Response>) -> AnyPublisher<Response, BifrostError> {
@@ -32,7 +31,6 @@ public extension URLSession {
             .eraseToAnyPublisher()
     }
     
-    @available(iOS 13, macOS 10.15, *)
     func response<Convertible: RequestConvertible>(_ convertible: Convertible) -> AnyPublisher<Convertible.Response, BifrostError> {
         response(convertible.request)
     }
