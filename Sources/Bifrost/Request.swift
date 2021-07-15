@@ -8,14 +8,30 @@ import Foundation
 
 public struct Request<Response> {
         
-    let urlRequest: URLRequest
+    public let method: HTTPMethod
     
-    private let validator: ResponseValidator
+    public let endpoint: Endpoint<Response>
     
-    private let parser: ResponseParser<Response>
+    public var headers: [HTTPHeader]?
+    
+    public var body: Data?
+    
+    public let validator: ResponseValidator
+    
+    public let parser: ResponseParser<Response>
         
-    private init(urlRequest: URLRequest, validator: ResponseValidator = .default, parser: ResponseParser<Response>) {
-        self.urlRequest = urlRequest
+    public init(
+        method: HTTPMethod = .get,
+        endpoint: Endpoint<Response>,
+        headers: [HTTPHeader]? = nil,
+        body: Data?,
+        validator: ResponseValidator = .default,
+        parser: ResponseParser<Response>
+    ) {
+        self.method = method
+        self.endpoint = endpoint
+        self.headers = headers
+        self.body = body
         self.validator = validator
         self.parser = parser
     }
@@ -33,32 +49,12 @@ public extension Request {
     
     func map<NewResponse>(_ transform: @escaping (Response) -> NewResponse) -> Request<NewResponse> {
         Request<NewResponse>(
-            urlRequest: urlRequest,
+            method: method,
+            endpoint: Endpoint(endpoint.url),
+            headers: headers,
+            body: body,
             validator: validator,
             parser: parser.map(transform)
-        )
-    }
-}
-
-public extension Request {
-    
-    init(
-        method: HTTPMethod = .get,
-        endpoint: Endpoint<Response>,
-        headers: [HTTPHeader]? = nil,
-        body: Data? = nil,
-        validator: ResponseValidator = .default,
-        parser: ResponseParser<Response>
-    ) {
-        self.init(
-            urlRequest: URLRequest(
-                method: method,
-                endpoint: endpoint,
-                headers: headers,
-                body: body
-            ),
-            validator: validator,
-            parser: parser
         )
     }
 }
@@ -73,7 +69,7 @@ public extension Request where Response: Decodable {
         validator: ResponseValidator = .default,
         decoder: JSONDecoder = .init()
     ) {
-        self = Request(
+        self.init(
             method: method,
             endpoint: endpoint,
             headers: headers,
@@ -93,7 +89,7 @@ public extension Request where Response == Void {
         body: Data? = nil,
         validator: ResponseValidator = .default
     ) {
-        self = Request(
+        self.init(
             method: method,
             endpoint: endpoint,
             headers: heaeders,

@@ -21,6 +21,8 @@ public extension ResponseValidator {
     
     static let always = ResponseValidator { _ in true }
     
+    static let never = ResponseValidator { _ in false }
+    
     static func statusCode(in range: Range<Int>) -> Self {
         ResponseValidator { response in
             range.contains(response.statusCode)

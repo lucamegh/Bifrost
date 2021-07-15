@@ -10,7 +10,7 @@ import Foundation
 public extension URLSession {
     
     func response<Response>(_ request: Request<Response>) -> AnyPublisher<Response, BifrostError> {
-        self.dataTaskPublisher(for: request.urlRequest)
+        self.dataTaskPublisher(for: URLRequest(request))
             .mapError { .urlError(code: $0.code) }
             .map { data, response -> Result<Response, BifrostError> in
                 guard
@@ -50,7 +50,7 @@ public extension URLSession {
                 completionHandler(result)
             }
         }
-        let task = dataTask(with: request.urlRequest) { data, response, error in
+        let task = dataTask(with: URLRequest(request)) { data, response, error in
             if let error = error as? URLError {
                 complete(with: .failure(.urlError(code: error.code)))
             } else if let error = error {

@@ -24,14 +24,6 @@ public extension ContentType {
     static let textHTML: ContentType = "text/html"
     
     static let textPlain: ContentType = "text/plain"
-    
-    static var multipartFormData: ContentType {
-        multipartFormData(boundary: UUID().uuidString)
-    }
-    
-    static func multipartFormData(boundary: String) -> ContentType {
-        ContentType("multipart/form-data; boundary=\(boundary)")
-    }
 }
 
 extension ContentType: ExpressibleByStringLiteral {

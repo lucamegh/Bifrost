@@ -28,7 +28,8 @@ public extension Endpoint {
 extension Endpoint: ExpressibleByStringLiteral {
 
     public init(stringLiteral value: StaticString) {
-        self = Endpoint(URL(string: "\(value)")!)
+        let url = URL(string: "\(value)")!
+        self = Endpoint(url)
     }
 }
 
