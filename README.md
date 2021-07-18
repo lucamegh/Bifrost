@@ -127,7 +127,7 @@ extension Request where Response: Decodable {
 
     private static var parser: ResponseParser<Response> {
         ResponseParser { data in            
-            let response = try decoder.decode(SwapiResponse<Response>.self, from: data)
+            let response = try decoder.decode(SWAPIResponse<Response>.self, from: data)
             return try response.get()
         }
     }
