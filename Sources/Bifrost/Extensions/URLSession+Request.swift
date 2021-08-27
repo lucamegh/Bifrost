@@ -44,7 +44,6 @@ public extension URLSession {
         resultQueue: DispatchQueue = .main,
         completionHandler: @escaping (Result<Response, BifrostError>) -> Void
     ) -> URLSessionDataTask {
-        defer { task.resume() }
         func complete(with result: Result<Response, BifrostError>) {
             resultQueue.async {
                 completionHandler(result)
@@ -67,6 +66,7 @@ public extension URLSession {
                 }
             }
         }
+        task.resume()
         return task
     }
     
